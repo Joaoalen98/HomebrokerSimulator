@@ -8,6 +8,7 @@ Content-Type: application/json
 
 {
   "symbol": "PETR4",
+  "name": "PETROBRAS PN",
   "price": 35.00
 }
 
@@ -18,6 +19,7 @@ Content-Type: application/json
 
 {
   "symbol": "VALE3",
+  "name": "VALE ON",
   "price": 22.00
 }
 
@@ -28,6 +30,7 @@ Content-Type: application/json
 
 {
   "symbol": "ITUB4",
+  "name": "ITAU PN",
   "price": 17.00
 }
 
@@ -56,3 +59,34 @@ Content-Type: application/json
 ### Obter registros di�rios de um ativo
 GET {{url}}/api/assets/dailies/{{assetId}}
 
+
+
+
+
+
+
+
+### Criar uma carteira
+# @name createWallet
+POST {{url}}/api/wallets
+
+###
+@walletId = {{createWallet.response.body.id}}
+
+### Obter todas as carteiras
+GET {{url}}/api/wallets
+
+
+### Obter carteira por ID
+GET {{url}}/api/wallets/{{walletId}}
+
+### Adicionar ativo a carteira
+POST {{url}}/api/wallets/wallet-assets
+Content-Type: application/json
+
+{
+  "walletId": "{{walletId}}",
+  "assetId": "{{assetId}}",
+  "price": 23,
+  "shares": 10
+}

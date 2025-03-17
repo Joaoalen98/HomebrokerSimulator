@@ -14,5 +14,9 @@ public class WalletAsset : EntityBase
     [BsonRepresentation(BsonType.ObjectId)]
     public required string AssetId { get; set; }
 
+    public required decimal Price { get; set; }
+
+    public required int Shares { get; set; }
+
     public Asset Asset { get; set; } = default!;
 }
