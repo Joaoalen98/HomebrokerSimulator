@@ -1,6 +1,58 @@
-@HomebrokerSimulator.ClientAPI_HostAddress = http://localhost:5288
+@url = http://localhost:5288
 
-GET {{HomebrokerSimulator.ClientAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+
+### Criar um novo ativo
+# @name createAsset1
+POST {{url}}/api/assets
+Content-Type: application/json
+
+{
+  "symbol": "PETR4",
+  "price": 35.00
+}
+
+### Criar um novo ativo
+# @name createAsset2
+POST {{url}}/api/assets
+Content-Type: application/json
+
+{
+  "symbol": "VALE3",
+  "price": 22.00
+}
+
+### Criar um novo ativo
+# @name createAsset3
+POST {{url}}/api/assets
+Content-Type: application/json
+
+{
+  "symbol": "ITUB4",
+  "price": 17.00
+}
 
 ###
+@assetId = {{createAsset1.response.body.id}}
+
+
+### Obter todos os ativos
+GET {{url}}/api/assets
+
+
+### Obter um ativo por ID
+GET {{url}}/api/assets/{{assetId}}
+
+
+### Criar um novo registro di�rio de ativo
+POST {{url}}/api/assets/dailies
+Content-Type: application/json
+
+{
+  "assetId": "{{assetId}}",
+  "date": "2023-10-10T00:00:00Z",
+  "price": 36.00
+}
+
+### Obter registros di�rios de um ativo
+GET {{url}}/api/assets/dailies/{{assetId}}
+
