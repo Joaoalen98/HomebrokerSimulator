@@ -13,7 +13,8 @@ public class AssetService(MongoDBService mongoDBService) : IAssetService
         var asset = new Asset
         {
             Price = createAssetDTO.Price,
-            Symbol = createAssetDTO.Symbol
+            Symbol = createAssetDTO.Symbol,
+            Name = createAssetDTO.Name
         };
 
         await mongoDBService.Assets.InsertOneAsync(asset);

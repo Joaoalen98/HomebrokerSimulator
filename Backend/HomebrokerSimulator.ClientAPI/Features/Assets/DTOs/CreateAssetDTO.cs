@@ -2,6 +2,7 @@
 
 public record CreateAssetDTO(
     string Symbol,
+    string Name,
     decimal Price)
 {
 }
