@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using HomebrokerSimulator.ClientAPI.Common.Middlewares;
 using HomebrokerSimulator.ClientAPI.Features.Assets;
 using HomebrokerSimulator.ClientAPI.Features.Orders;
 using HomebrokerSimulator.ClientAPI.Features.Wallets;
@@ -21,6 +22,8 @@ builder.Services.AddSingleton<IWalletService, WalletService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapAssetRoutes();
 app.MapWalletRoutes();
