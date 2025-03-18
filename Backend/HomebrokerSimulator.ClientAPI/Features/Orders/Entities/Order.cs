@@ -18,6 +18,8 @@ public class Order : EntityBase
 
     public required int Shares { get; set; }
 
+    public required int Partial { get; set; }
+
     public required EOrderType Type { get; set; }
     
     public EOrderStatus Status { get; set; } = EOrderStatus.PENDING;

@@ -52,7 +52,7 @@ Content-Type: application/json
 
 {
   "assetId": "{{assetId}}",
-  "date": "2023-10-10T00:00:00Z",
+  "date": "{{$datetime iso8601}}",
   "price": 36.00
 }
 
@@ -87,6 +87,42 @@ Content-Type: application/json
 {
   "walletId": "{{walletId}}",
   "assetId": "{{assetId}}",
-  "price": 23,
   "shares": 10
+}
+
+
+
+### Criar uma ordem
+# @name createOrder
+POST {{url}}/api/orders
+Content-Type: application/json
+
+{
+  "assetId": "{{assetId}}",
+  "walletId": "{{walletId}}",
+  "price": 23.90,
+  "shares": 1000,
+  "type": "BUY"
+}
+
+###
+@orderId = {{createOrder.response.body.id}}
+
+
+### Obter ordens por carteira
+GET {{url}}/api/orders?walletId={{walletId}}
+
+
+### Obter ordem por id
+GET {{url}}/api/orders/{{orderId}}
+
+
+### Criar um trade
+POST {{url}}/api/orders/trades
+Content-Type: application/json
+
+{
+  "orderId": "{{orderId}}",
+  "price": 23.00,
+  "shares": 100
 }

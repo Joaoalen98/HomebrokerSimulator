@@ -1,5 +1,4 @@
 ﻿using HomebrokerSimulator.ClientAPI.Common.Exceptions;
-using HomebrokerSimulator.ClientAPI.Features.Assets.Entities;
 using HomebrokerSimulator.ClientAPI.Features.Wallets.DTOs;
 using HomebrokerSimulator.ClientAPI.Features.Wallets.Entities;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo;
@@ -74,7 +73,6 @@ public class WalletService(MongoDBService mongoDBService) : IWalletService
         var walletAsset = new WalletAsset
         {
             AssetId = createWalletAssetDTO.AssetId,
-            Price = createWalletAssetDTO.Price,
             Shares = createWalletAssetDTO.Shares,
             WalletId = createWalletAssetDTO.WalletId,
         };

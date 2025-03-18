@@ -36,11 +36,10 @@ public class MongoDBService
 
     public void CreateIndexes()
     {
-        var options = new CreateIndexOptions { Unique = true };
-
         var indexAsset = new CreateIndexModel<Asset>(
                 Builders<Asset>.IndexKeys
-                    .Ascending(a => a.Symbol), options);
+                    .Ascending(a => a.Symbol),
+                    new CreateIndexOptions { Unique = true });
 
         var indexAssetDaily = new CreateIndexModel<AssetDaily>(
                 Builders<AssetDaily>.IndexKeys
@@ -50,7 +49,7 @@ public class MongoDBService
             Builders<WalletAsset>.IndexKeys
                 .Ascending(wa => wa.WalletId)
                 .Ascending(wa => wa.AssetId),
-                options);
+                new CreateIndexOptions { Unique = true });
 
         Assets.Indexes.CreateOne(indexAsset);
         AssetDailies.Indexes.CreateOne(indexAssetDaily);

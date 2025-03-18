@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo
+    build: ./.docker/mongodb
     container_name: hombroker-mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root

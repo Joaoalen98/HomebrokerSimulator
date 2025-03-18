@@ -1,5 +1,4 @@
 using HomebrokerSimulator.ClientAPI.Features.Assets.Entities;
-using HomebrokerSimulator.ClientAPI.Features.Shared;
 using HomebrokerSimulator.ClientAPI.Features.Shared.Entities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -13,8 +12,6 @@ public class WalletAsset : EntityBase
 
     [BsonRepresentation(BsonType.ObjectId)]
     public required string AssetId { get; set; }
-
-    public required decimal Price { get; set; }
 
     public required int Shares { get; set; }
 
