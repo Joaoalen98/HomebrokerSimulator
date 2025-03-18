@@ -16,14 +16,25 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+builder.Services.AddSignalR()
+    .AddJsonProtocol(configure =>
+    {
+        configure.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+builder.Services.AddHostedService<AssetBackgroundService>();
+
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<IAssetService, AssetService>();
 builder.Services.AddSingleton<IWalletService, WalletService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.MapHub<AssetHub>("/asset-hub");
 
 app.MapAssetRoutes();
 app.MapWalletRoutes();
