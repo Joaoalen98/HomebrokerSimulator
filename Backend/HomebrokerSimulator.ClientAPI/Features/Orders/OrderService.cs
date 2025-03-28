@@ -1,14 +1,27 @@
 ﻿using HomebrokerSimulator.ClientAPI.Common.Exceptions;
 using HomebrokerSimulator.ClientAPI.Features.Orders.DTOs;
 using HomebrokerSimulator.ClientAPI.Features.Orders.Entities;
+using HomebrokerSimulator.ClientAPI.Features.Orders.Enums;
 using HomebrokerSimulator.ClientAPI.Features.Wallets.Entities;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo;
+using MassTransit;
 using MongoDB.Driver;
 
 namespace HomebrokerSimulator.ClientAPI.Features.Orders;
 
-public class OrderService(MongoDBService mongoDBService) : IOrderService
+public class OrderService(
+    MongoDBService mongoDBService, 
+    IServiceProvider serviceProvider) : IOrderService
 {
+    private async Task SendOrderToQueue(CreateQueueOrder createQueueOrder)
+    {
+        var scope = serviceProvider.CreateScope();
+        var sendEndpointProvider = scope.ServiceProvider.GetRequiredService<ISendEndpointProvider>();
+
+        var publishEndpoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:order-create"));
+        await publishEndpoint.Send(createQueueOrder);
+    }
+
     public async Task<Order> CreateOrder(CreateOrderDTO createOrderDTO)
     {
         var order = new Order
@@ -22,6 +35,18 @@ public class OrderService(MongoDBService mongoDBService) : IOrderService
         };
 
         await mongoDBService.Orders.InsertOneAsync(order);
+
+        var assetSymbol = await mongoDBService.Assets
+            .Find(a => a.Id == createOrderDTO.AssetId)
+            .Project(a => a.Symbol)
+            .FirstOrDefaultAsync();
+
+        await SendOrderToQueue(new CreateQueueOrder(
+            assetSymbol,
+            createOrderDTO.Price,
+            createOrderDTO.Shares,
+            createOrderDTO.Type.ToString(),
+            order.Id!));
 
         return order;
     }
@@ -49,6 +74,15 @@ public class OrderService(MongoDBService mongoDBService) : IOrderService
             .FirstOrDefaultAsync();
 
         return order;
+    }
+
+    public async Task<Order> UpdateOrderStatus(string orderId, EOrderStatus orderStatus)
+    {
+        var upadate = Builders<Order>.Update
+            .Set(o => o.Status, orderStatus);
+
+        var updated = await mongoDBService.Orders.FindOneAndUpdateAsync(o => o.Id == orderId, upadate);
+        return updated;
     }
 
     public async Task<OrderTrade> CreateOrderTrade(CreateOrderTradeDTO createOrderTradeDTO)

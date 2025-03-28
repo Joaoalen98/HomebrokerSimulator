@@ -3,8 +3,10 @@ using HomebrokerSimulator.ClientAPI.Common.Middlewares;
 using HomebrokerSimulator.ClientAPI.Features.Assets;
 using HomebrokerSimulator.ClientAPI.Features.Orders;
 using HomebrokerSimulator.ClientAPI.Features.Wallets;
+using HomebrokerSimulator.ClientAPI.Infra.Messageria;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo.DTOs;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,27 @@ builder.Services.AddSignalR()
     {
         configure.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddMassTransit(config =>
+{
+
+    config.AddConsumer<AssetDailyCreateConsumer>();
+    config.AddConsumer<OrderStatusConsumer>();
+    config.AddConsumer<OrderTradeConsumer>();
+
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq://localhost:5672", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("daily-create", e => e.ConfigureConsumer<AssetDailyCreateConsumer>(context));
+        cfg.ReceiveEndpoint("order-status", e => e.ConfigureConsumer<OrderStatusConsumer>(context));
+        cfg.ReceiveEndpoint("trade-create", e => e.ConfigureConsumer<OrderTradeConsumer>(context));
+    });
+});
 
 builder.Services.AddHostedService<AssetBackgroundService>();
 builder.Services.AddHostedService<OrderBackgroundService>();

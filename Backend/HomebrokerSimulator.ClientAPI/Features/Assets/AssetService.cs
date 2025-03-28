@@ -73,4 +73,11 @@ public class AssetService(MongoDBService mongoDBService) : IAssetService
 
         return dailies;
     }
+
+    public Task<Asset> GetAssetBySymbol(string id)
+    {
+        return mongoDBService.Assets
+            .Find(a => a.Symbol == id)
+            .FirstOrDefaultAsync();
+    }
 }

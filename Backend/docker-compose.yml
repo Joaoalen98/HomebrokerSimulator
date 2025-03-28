@@ -7,3 +7,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - 27017:27017
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: hombroker-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
