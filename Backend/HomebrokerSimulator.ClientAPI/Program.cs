@@ -7,8 +7,21 @@ using HomebrokerSimulator.ClientAPI.Infra.Messageria;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo;
 using HomebrokerSimulator.ClientAPI.Infra.Mongo.DTOs;
 using MassTransit;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cors = new CorsPolicyBuilder()
+    .WithOrigins("http://localhost:4200")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .Build();
+
+builder.Services.AddCors(setup =>
+{
+    setup.AddDefaultPolicy(cors);
+});
 
 builder.Services.AddOpenApi();
 
@@ -55,6 +68,8 @@ builder.Services.AddSingleton<IOrderService, OrderService>();
 
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

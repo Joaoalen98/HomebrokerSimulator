@@ -1,1 +1,19 @@
-<p>wallets works!</p>
+<h2>Carteiras</h2>
+
+
+<p-table [value]="wallets">
+    <ng-template #header>
+        <tr>
+            <th>Id</th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-wallet>
+        <tr>
+            <td>{{ wallet.id }}</td>
+            <td>
+                <p-button>Acessar</p-button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
