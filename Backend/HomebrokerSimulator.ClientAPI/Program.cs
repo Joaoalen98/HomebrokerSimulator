@@ -23,6 +23,7 @@ builder.Services.AddSignalR()
     });
 
 builder.Services.AddHostedService<AssetBackgroundService>();
+builder.Services.AddHostedService<OrderBackgroundService>();
 
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<IAssetService, AssetService>();
@@ -35,6 +36,7 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapHub<AssetHub>("/asset-hub");
+app.MapHub<OrderHub>("/order-hub");
 
 app.MapAssetRoutes();
 app.MapWalletRoutes();
